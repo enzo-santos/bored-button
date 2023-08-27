@@ -87,7 +87,9 @@ val Wordle = FC<WordleProps> { _ ->
     val expectedWord = latinize(state.expectedWord)
     val letters = expectedWord.toSet()
 
-    val checkKeyPress = useCallback<(Event) -> Unit>(listOf(state.attemptIndex, state.letterIndex)) callback@{ event ->
+    val checkKeyPress = useCallback<(Event) -> Unit>(listOf(state.success, state.attemptIndex, state.letterIndex)) callback@{ event ->
+        if (state.success != null) return@callback
+
         val attemptIndex = state.attemptIndex
         val letterIndex = state.letterIndex
 
