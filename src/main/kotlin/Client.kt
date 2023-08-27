@@ -7,7 +7,7 @@ fun main() {
     document.body!!.appendChild(container)
 
     val welcome = Sudoku.create {
-        grid = games.Grid()
+        grid = games.sudoku.Grid()
         loading = false
     }
     createRoot(container).render(welcome)

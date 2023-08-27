@@ -13,15 +13,18 @@ import react.dom.html.ReactHTML.p
 import react.useState
 
 external interface SudokuProps : Props {
-    var grid: games.Grid
+    var grid: games.sudoku.Grid
     var loading: Boolean
 }
 
 
 @Suppress("NonExternalClassifierExtendingStateOrProps")
-fun SudokuProps.copyWith(grid: games.Grid? = null, loading: Boolean? = null): SudokuProps {
+fun SudokuProps.copyWith(
+    grid: games.sudoku.Grid? = null,
+    loading: Boolean? = null,
+): SudokuProps {
     return object : SudokuProps {
-        override var grid: games.Grid = grid ?: this@copyWith.grid
+        override var grid: games.sudoku.Grid = grid ?: this@copyWith.grid
         override var loading: Boolean = loading ?: this@copyWith.loading
     }
 }
@@ -88,7 +91,7 @@ val Sudoku = FC<SudokuProps> { props ->
             button {
                 +"solve"
                 onClick = { _ ->
-                    val game = games.Sudoku(state.grid)
+                    val game = games.sudoku.Sudoku(state.grid)
                     game.solve()
                     state = state.copyWith(grid = game.grid)
                 }
@@ -96,7 +99,7 @@ val Sudoku = FC<SudokuProps> { props ->
             button {
                 +"reset"
                 onClick = { _ ->
-                    state = state.copyWith(grid = games.Grid())
+                    state = state.copyWith(grid = games.sudoku.Grid())
                 }
             }
             button {
@@ -124,7 +127,10 @@ val Sudoku = FC<SudokuProps> { props ->
                                     .toTypedArray()
                             }
                             data = data.toTypedArray()
-                            state = state.copyWith(grid = games.Grid(data), loading = false)
+                            state = state.copyWith(
+                                grid = games.sudoku.Grid(data),
+                                loading = false,
+                            )
                         }
                         true
                     }

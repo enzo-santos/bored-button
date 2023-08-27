@@ -1,4 +1,4 @@
-package games
+package games.sudoku
 
 private val chunkRange = 0 until 3
 private val sudokuRange = 0 until 9
