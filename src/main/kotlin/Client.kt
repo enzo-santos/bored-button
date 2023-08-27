@@ -6,9 +6,6 @@ fun main() {
     val container = document.createElement("div")
     document.body!!.appendChild(container)
 
-    val welcome = Sudoku.create {
-        grid = games.sudoku.Grid()
-        loading = false
-    }
+    val welcome = screens.Wordle.create {}
     createRoot(container).render(welcome)
 }

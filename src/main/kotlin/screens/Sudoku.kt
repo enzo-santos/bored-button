@@ -1,3 +1,5 @@
+package screens
+
 import csstype.*
 import emotion.react.css
 import org.w3c.xhr.JSON
