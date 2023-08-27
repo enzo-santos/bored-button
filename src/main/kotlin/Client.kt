@@ -8,6 +8,7 @@ fun main() {
 
     val welcome = Sudoku.create {
         grid = games.Grid()
+        loading = false
     }
     createRoot(container).render(welcome)
 }
