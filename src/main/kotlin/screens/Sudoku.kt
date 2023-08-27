@@ -14,25 +14,20 @@ import react.dom.html.ReactHTML.input
 import react.dom.html.ReactHTML.p
 import react.useState
 
-external interface SudokuProps : Props {
-    var grid: games.sudoku.Grid
-    var loading: Boolean
-}
+external interface SudokuProps : Props
 
+data class SudokuState(
+    val grid: games.sudoku.Grid,
+    val loading: Boolean,
+)
 
-@Suppress("NonExternalClassifierExtendingStateOrProps")
-fun SudokuProps.copyWith(
-    grid: games.sudoku.Grid? = null,
-    loading: Boolean? = null,
-): SudokuProps {
-    return object : SudokuProps {
-        override var grid: games.sudoku.Grid = grid ?: this@copyWith.grid
-        override var loading: Boolean = loading ?: this@copyWith.loading
-    }
-}
-
-val Sudoku = FC<SudokuProps> { props ->
-    var state by useState(props)
+val Sudoku = FC<SudokuProps> { _ ->
+    var state by useState(
+        SudokuState(
+            grid = games.sudoku.Grid(),
+            loading = false,
+        )
+    )
     div {
         css {
             display = Display.flex
@@ -70,7 +65,7 @@ val Sudoku = FC<SudokuProps> { props ->
                         this.value = "$value"
                         onChange = callback@{ event ->
                             val newValue = event.target.value.toIntOrNull() ?: return@callback
-                            state = state.copyWith(
+                            state = state.copy(
                                 grid = state.grid.copy()
                                     .also { it.setValue(r, c, newValue) }
                             )
@@ -95,20 +90,20 @@ val Sudoku = FC<SudokuProps> { props ->
                 onClick = { _ ->
                     val game = games.sudoku.Sudoku(state.grid)
                     game.solve()
-                    state = state.copyWith(grid = game.grid)
+                    state = state.copy(grid = game.grid)
                 }
             }
             button {
                 +"reset"
                 onClick = { _ ->
-                    state = state.copyWith(grid = games.sudoku.Grid())
+                    state = state.copy(grid = games.sudoku.Grid())
                 }
             }
             button {
                 +"random"
                 disabled = state.loading
                 onClick = { _ ->
-                    state = state.copyWith(loading = true)
+                    state = state.copy(loading = true)
                     val request = XMLHttpRequest()
                     request.open("GET", "https://sudoku-api.vercel.app/api/dosuku", true)
                     request.responseType = XMLHttpRequestResponseType.JSON
@@ -129,7 +124,7 @@ val Sudoku = FC<SudokuProps> { props ->
                                     .toTypedArray()
                             }
                             data = data.toTypedArray()
-                            state = state.copyWith(
+                            state = state.copy(
                                 grid = games.sudoku.Grid(data),
                                 loading = false,
                             )
