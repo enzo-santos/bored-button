@@ -16,7 +16,7 @@ import react.useState
 
 external interface MainProps : Props
 
-enum class GameType { SUDOKU, WORDLE }
+enum class GameType { SUDOKU, WORDLE, TZFE }
 
 data class MainState(
     val currentGameType: GameType,
@@ -85,12 +85,6 @@ val Icon = FC<IconProps> { props ->
             d = "M12 15h3M10 16h3"
         }
     }
-//    canvas {
-//        ref = canvasRef
-//        width = window.innerWidth.toDouble()
-//        height = window.innerHeight.toDouble()
-//
-//    }
 }
 
 val Main = FC<MainProps> { _ ->
@@ -135,11 +129,13 @@ val Main = FC<MainProps> { _ ->
             +when (state.currentGameType) {
                 GameType.SUDOKU -> "Sudoku Solver"
                 GameType.WORDLE -> "Wordle"
+                GameType.TZFE -> "2048"
             }
         }
         +when (state.currentGameType) {
             GameType.SUDOKU -> Sudoku.create {}
             GameType.WORDLE -> Wordle.create {}
+            GameType.TZFE -> TZFE.create {}
         }
     }
 }
