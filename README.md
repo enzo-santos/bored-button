@@ -18,11 +18,11 @@ A aplicação abrirá no http://localhost:8080.
 
 ## Implementação
 
-Os jogos implementados até agora foram:
+Os jogos implementados até agora foram
 
-- Resolvedor de Sudoku: insira um tabuleiro de Sudoku incompleto e uma solução será exibida 
+- resolvedor de Sudoku: insira um tabuleiro de Sudoku incompleto e uma solução será exibida 
 - [Wordle](https://www.nytimes.com/games/wordle/index.html) (ou [Termo](https://term.ooo/), em português): encontre uma palavra de cinco letras em seis tentativas
-
+- 2048: tente formar o maior valor possível movendo as peças do tabuleiro
 
 Mais jogos haverão de ser implementados.
 
@@ -44,3 +44,9 @@ Algumas das telas implementadas seguem abaixo. Para alternar entre os jogos, bas
 
 ![localhost_8080_(Nest Hub) (3)](https://github.com/enzo-santos/bored-button/assets/22715629/8d80c439-0815-40e7-b69a-bb49de53263c)
 ![localhost_8080_(Nest Hub) (4)](https://github.com/enzo-santos/bored-button/assets/22715629/3e11ed96-b32e-4d17-b684-8aff19c9d977)
+
+### 2048
+
+![localhost_8080_(Nest Hub) (5)](https://github.com/enzo-santos/bored-button/assets/22715629/9770ed36-e6ae-4a3d-9036-74a9c8cdbff4)
+![localhost_8080_(Nest Hub) (6)](https://github.com/enzo-santos/bored-button/assets/22715629/061bb20d-951c-4ea2-854b-ae5f45b0522f)
+
