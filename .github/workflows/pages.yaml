@@ -19,7 +19,7 @@ jobs:
       - uses: gradle/gradle-build-action@v2.8.0
 
       - name: Build
-        run: ./gradlew build
+        run: gradle build
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4.4.3
