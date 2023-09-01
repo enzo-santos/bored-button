@@ -1,20 +1,31 @@
 # Bored Button
 
-Este repositório foi inspirado por [Bored? Press the Bored Button!](https://www.boredbutton.com/).
+[![Website](https://img.shields.io/website?up_message=online&down_message=offline&url=https%3A%2F%2Fenzo-santos.github.io%2Fbored-button%2F)](https://enzo-santos.github.io/bored-button/)
+
+Este projeto foi inspirado por [Bored? Press the Bored Button!](https://www.boredbutton.com/).
 
 ## Uso
 
-Para o público geral, ainda não há um site disponível, mas está sendo trabalhado!
+Para desenvolvimento, é necessário ter o [Gradle](https://gradle.org/install/) instalado.
 
-Para os desenvolvedores, execute os seguintes comandos no terminal:
+Execute os seguintes comandos no terminal:
 
 ```shell
 git clone https://github.com/enzo-santos/bored-button
 cd bored-button
+```
+
+Para executar no localhost, execute
+
+```shell
 gradle run
 ```
 
-A aplicação abrirá no http://localhost:8080.
+Para gerar o HTML do site no diretório *build/distributions*, execute
+
+```shell
+gradle build
+```
 
 ## Implementação
 
@@ -22,7 +33,7 @@ Os jogos implementados até agora foram
 
 - resolvedor de Sudoku: insira um tabuleiro de Sudoku incompleto e uma solução será exibida 
 - [Wordle](https://www.nytimes.com/games/wordle/index.html) (ou [Termo](https://term.ooo/), em português): encontre uma palavra de cinco letras em seis tentativas
-- 2048: tente formar o maior valor possível movendo as peças do tabuleiro
+- 2048: tente formar o maior múltiplo de 2 possível movendo as peças de um tabuleiro 4x4 com as setas
 
 Mais jogos haverão de ser implementados.
 
