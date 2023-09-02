@@ -3,6 +3,7 @@ package screens
 import csstype.*
 import emotion.react.css
 import kotlinx.browser.document
+import kotlinx.browser.window
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.events.KeyboardEvent
@@ -15,12 +16,14 @@ import react.dom.html.ReactHTML.p
 external interface WordleProps : Props
 
 data class WordleState(
-    val expectedWord: String,
+    val gameWords: List<String>?,
+    val expectedWord: String?,
     val attemptIndex: Int,
     val letterIndex: Int,
     val matrix: List<MutableList<Char?>>,
     val success: Boolean?,
 )
+
 
 @JsModule("latinize")
 @JsNonModule
@@ -29,38 +32,6 @@ external fun latinize(value: String): String
 private const val lowercaseLetters = "abcdefghijklmnopqrstuvwxyz"
 private const val gameSize: Int = 6
 private const val wordSize: Int = 5
-private val gameWords: List<String> = listOf(
-    "ajaua",
-    "anavi",
-    "apota",
-    "aseno",
-    "auleu",
-    "bisbi",
-    "bolão",
-    "cauna",
-    "cetil",
-    "cúnia",
-    "fanoa",
-    "fátuo",
-    "ferga",
-    "gruir",
-    "iriar",
-    "istro",
-    "maçom",
-    "mutum",
-    "népia",
-    "novar",
-    "omaha",
-    "oxono",
-    "pluto",
-    "rabel",
-    "riata",
-    "rúbeo",
-    "sério",
-    "udana",
-    "upema",
-    "vileu",
-)
 
 fun createEmptyGameMatrix(): List<MutableList<Char?>> {
     val matrix = mutableListOf<MutableList<Char?>>()
@@ -77,88 +48,117 @@ fun createEmptyGameMatrix(): List<MutableList<Char?>> {
 val Wordle = FC<WordleProps> { _ ->
     var state by useState(
         WordleState(
-            expectedWord = gameWords.random(),
+            gameWords = null,
+            expectedWord = null,
             attemptIndex = 0,
             letterIndex = 0,
             matrix = createEmptyGameMatrix(),
             success = null,
         )
     )
-    val expectedWord = latinize(state.expectedWord)
-    val letters = expectedWord.toSet()
-
-    val checkKeyPress = useCallback<(Event) -> Unit>(listOf(state.success, state.attemptIndex, state.letterIndex)) callback@{ event ->
-        if (state.success != null) return@callback
-
-        val attemptIndex = state.attemptIndex
-        val letterIndex = state.letterIndex
-
-        val e = event.unsafeCast<KeyboardEvent<*>>()
-
-        state = when (e.key) {
-            "Backspace" -> {
-                val nextLetterIndex = kotlin.math.max(0, letterIndex - 1)
-                state.copy(
-                    matrix = state.matrix.onEachIndexed { i, row ->
-                        if (i == attemptIndex) {
-                            row[nextLetterIndex] = null
-                        }
-                    },
-                    letterIndex = nextLetterIndex,
+    useEffectOnce {
+        window.fetch("./wordle.dic")
+            .then { response -> response.text() }
+            .then { text -> text.trim().split("\n").map(String::trim) }
+            .then { words ->
+                state = state.copy(
+                    gameWords = words,
+                    expectedWord = words.random(),
                 )
             }
+    }
 
-            "Enter" -> {
-                if (letterIndex < wordSize) return@callback
+    val checkKeyPress =
+        useCallback<(Event) -> Unit>(
+            listOf(
+                state.expectedWord,
+                state.success,
+                state.attemptIndex,
+                state.letterIndex
+            )
+        ) callback@{ event ->
+            val success = state.success
+            val attemptIndex = state.attemptIndex
+            val letterIndex = state.letterIndex
+            val expectedWord = state.expectedWord
 
-                if (attemptIndex < gameSize - 1) {
-                    val actualWord = state.matrix[attemptIndex].joinToString("")
-                    if (actualWord == expectedWord) {
-                        state.copy(success = true)
+            val normalizedWord = latinize(expectedWord ?: return@callback)
+            if (success != null) return@callback
+            val e = event.unsafeCast<KeyboardEvent<*>>()
+
+            when (e.key) {
+                "Backspace" -> {
+                    val nextLetterIndex = kotlin.math.max(0, letterIndex - 1)
+                    state = state.copy(
+                        matrix = state.matrix.onEachIndexed { i, row ->
+                            if (i == attemptIndex) {
+                                row[nextLetterIndex] = null
+                            }
+                        },
+                        letterIndex = nextLetterIndex,
+                    )
+                }
+
+                "Enter" -> {
+                    if (letterIndex < wordSize) return@callback
+
+                    if (attemptIndex < gameSize - 1) {
+                        val actualWord =
+                            state.matrix[attemptIndex].joinToString("")
+                        state = if (actualWord == normalizedWord) {
+                            state.copy(success = true)
+                        } else {
+                            state.copy(
+                                attemptIndex = kotlin.math.min(
+                                    gameSize - 1,
+                                    attemptIndex + 1
+                                ),
+                                letterIndex = 0,
+                            )
+                        }
                     } else {
-                        state.copy(
-                            attemptIndex = kotlin.math.min(gameSize - 1, attemptIndex + 1),
-                            letterIndex = 0,
-                        )
+                        state = state.copy(success = false)
                     }
-                } else {
-                    state.copy(success = false)
+                }
+
+                else -> {
+                    if (e.key.length != 1) return@callback
+                    if (letterIndex == wordSize) return@callback
+
+                    val letter = latinize(e.key).lowercase()
+                    if (!lowercaseLetters.contains(letter)) return@callback
+
+                    val nextLetterIndex =
+                        kotlin.math.min(wordSize, letterIndex + 1)
+                    state = state.copy(
+                        matrix = state.matrix.onEachIndexed { i, row ->
+                            if (i == attemptIndex) {
+                                row[letterIndex] = letter[0]
+                            }
+                        },
+                        letterIndex = nextLetterIndex,
+                    )
                 }
             }
-
-//            "Escape" -> {
-//                if (attemptIndex == 0) return@callback
-//                state.copy(
-//                    attemptIndex = kotlin.math.max(0, attemptIndex - 1),
-//                    letterIndex = 0,
-//                )
-//            }
-
-            else -> {
-                if (e.key.length != 1) return@callback
-                if (letterIndex == wordSize) return@callback
-
-                val letter = latinize(e.key).lowercase()
-                if (!lowercaseLetters.contains(letter)) return@callback
-
-                val nextLetterIndex = kotlin.math.min(wordSize, letterIndex + 1)
-                state.copy(
-                    matrix = state.matrix.onEachIndexed { i, row ->
-                        if (i == attemptIndex) {
-                            row[letterIndex] = letter[0]
-                        }
-                    },
-                    letterIndex = nextLetterIndex,
-                )
-            }
         }
-    }
     useEffect(checkKeyPress) {
         document.addEventListener("keydown", checkKeyPress)
         cleanup {
             document.removeEventListener("keydown", checkKeyPress)
         }
     }
+
+    val expectedWord = state.expectedWord
+    if (expectedWord == null) {
+        div {
+            +"Carregando..."
+        }
+        return@FC
+    }
+
+    val normalizedWord = latinize(expectedWord)
+    val letters = normalizedWord.toSet()
+    val gameWords = state.gameWords
 
     div {
         css {
@@ -184,12 +184,13 @@ val Wordle = FC<WordleProps> { _ ->
                             fontSize = 14.px
                             textAlign = TextAlign.center
                             if (i < state.attemptIndex || state.success != null) {
-                                backgroundColor = if (expectedWord[j] == state.matrix[i][j])
-                                    NamedColor.lightgreen
-                                else if (letters.contains(state.matrix[i][j]))
-                                    NamedColor.lightyellow
-                                else
-                                    NamedColor.lightgray
+                                backgroundColor =
+                                    if (normalizedWord[j] == state.matrix[i][j])
+                                        NamedColor.lightgreen
+                                    else if (letters.contains(state.matrix[i][j]))
+                                        NamedColor.lightyellow
+                                    else
+                                        NamedColor.lightgray
 
                             } else if (i == state.attemptIndex && j == state.letterIndex) {
                                 backgroundColor = NamedColor.aliceblue
@@ -208,14 +209,14 @@ val Wordle = FC<WordleProps> { _ ->
                 +"A palavra era ${state.expectedWord}."
             }
         }
-        if (state.success != null) {
+        if (state.success != null && gameWords != null) {
             ReactHTML.button {
                 +"retry"
                 onClick = { _ ->
                     var newWord: String
                     do {
                         newWord = gameWords.random()
-                    } while (newWord == expectedWord)
+                    } while (newWord == normalizedWord)
                     state = state.copy(
                         expectedWord = newWord,
                         attemptIndex = 0,
