@@ -34,6 +34,7 @@ Os jogos implementados até agora foram
 - resolvedor de Sudoku: insira um tabuleiro de Sudoku incompleto e uma solução será exibida 
 - [Wordle](https://www.nytimes.com/games/wordle/index.html) (ou [Termo](https://term.ooo/), em português): encontre uma palavra de cinco letras em seis tentativas
 - 2048: tente formar o maior múltiplo de 2 possível movendo as peças de um tabuleiro 4x4 com as setas
+- Genius: veja quais cores se acendem e as repita alcançando a maior sequência possível
 
 Mais jogos haverão de ser implementados.
 
@@ -60,4 +61,10 @@ Algumas das telas implementadas seguem abaixo. Para alternar entre os jogos, bas
 
 ![localhost_8080_(Nest Hub) (5)](https://github.com/enzo-santos/bored-button/assets/22715629/9770ed36-e6ae-4a3d-9036-74a9c8cdbff4)
 ![localhost_8080_(Nest Hub) (6)](https://github.com/enzo-santos/bored-button/assets/22715629/061bb20d-951c-4ea2-854b-ae5f45b0522f)
+
+### Genius
+
+![localhost_8080_(Nest Hub) (7)](https://github.com/enzo-santos/bored-button/assets/22715629/b3e9e431-890b-4c9a-ae62-b0d998491dcc)
+![localhost_8080_(Nest Hub) (8)](https://github.com/enzo-santos/bored-button/assets/22715629/68229244-4135-457d-9dfb-bf8eabb892e3)
+![localhost_8080_(Nest Hub) (9)](https://github.com/enzo-santos/bored-button/assets/22715629/bea4b893-1dc7-4bd4-a596-64fa800baf85)
 
