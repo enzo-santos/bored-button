@@ -17,6 +17,7 @@ dependencies {
     implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:18.2.0-pre.346")
     implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion:11.9.3-pre.346")
     implementation(npm("latinize", "0.5.0"))
+    implementation(npm("tinycolor2", "1.6.0"))
     testImplementation("junit:junit:4.13.2")
     testImplementation("junit:junit:4.13.1")
 }

@@ -13,7 +13,12 @@ import react.dom.svg.ReactSVG.path
 import react.dom.svg.ReactSVG.svg
 import react.useState
 
-enum class GameType { SUDOKU, WORDLE, TZFE }
+enum class GameType {
+    SUDOKU,
+    WORDLE,
+    TZFE,
+    GENIUS,
+}
 
 data class MainState(
     val availableGameTypes: Set<GameType>,
@@ -233,12 +238,14 @@ val Main = FC<Props> { _ ->
                 GameType.SUDOKU -> "Sudoku Solver"
                 GameType.WORDLE -> "Wordle"
                 GameType.TZFE -> "2048"
+                GameType.GENIUS -> "Genius"
             }
         }
         when (state.currentGameType) {
             GameType.SUDOKU -> Sudoku {}
             GameType.WORDLE -> Wordle {}
             GameType.TZFE -> TZFE {}
+            GameType.GENIUS -> Genius {}
         }
     }
 }
